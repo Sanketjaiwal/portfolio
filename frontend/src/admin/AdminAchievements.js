@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import API from '../utils/api';
 
@@ -9,18 +9,26 @@ export default function AdminAchievements() {
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
 
-  const load = () => API.get('/achievements').then(r => setItems(r.data));
-  useEffect(() => { load(); }, []);
+  const load = useCallback(() => {
+    API.get('/achievements').then(r => setItems(r.data)).catch(() => {});
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
 
   const save = async (e) => {
     e.preventDefault();
-    if (editing) { await API.put(`/achievements/${editing}`, form); toast.success('Updated!'); }
-    else { await API.post('/achievements', form); toast.success('Added!'); }
-    setForm(empty); setEditing(null); load();
+    try {
+      if (editing) { await API.put(`/achievements/${editing}`, form); toast.success('Updated!'); }
+      else { await API.post('/achievements', form); toast.success('Added!'); }
+      setForm(empty); setEditing(null); load();
+    } catch { toast.error('Failed to save'); }
   };
 
-  const edit = (item) => { setEditing(item._id); setForm(item); };
-  const del = async (id) => { await API.delete(`/achievements/${id}`); toast.success('Deleted!'); load(); };
+  const edit = (item) => { setEditing(item._id); setForm({ ...empty, ...item }); };
+  const del = async (id) => {
+    try { await API.delete(`/achievements/${id}`); toast.success('Deleted!'); load(); }
+    catch { toast.error('Failed to delete'); }
+  };
 
   return (
     <div>

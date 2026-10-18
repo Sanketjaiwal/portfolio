@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import API from '../utils/api';
 
@@ -9,19 +9,27 @@ export default function AdminProjects() {
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
 
-  const load = () => API.get('/projects').then(r => setItems(r.data));
-  useEffect(() => { load(); }, []);
+  const load = useCallback(() => {
+    API.get('/projects').then(r => setItems(r.data)).catch(() => {});
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
 
   const save = async (e) => {
     e.preventDefault();
-    const data = { ...form, techStack: form.techStack.split(',').map(t => t.trim()).filter(Boolean) };
-    if (editing) { await API.put(`/projects/${editing}`, data); toast.success('Updated!'); }
-    else { await API.post('/projects', data); toast.success('Added!'); }
-    setForm(empty); setEditing(null); load();
+    try {
+      const data = { ...form, techStack: form.techStack.split(',').map(t => t.trim()).filter(Boolean) };
+      if (editing) { await API.put(`/projects/${editing}`, data); toast.success('Updated!'); }
+      else { await API.post('/projects', data); toast.success('Added!'); }
+      setForm(empty); setEditing(null); load();
+    } catch { toast.error('Failed to save'); }
   };
 
   const edit = (item) => { setEditing(item._id); setForm({ ...item, techStack: item.techStack?.join(', ') || '' }); };
-  const del = async (id) => { await API.delete(`/projects/${id}`); toast.success('Deleted!'); load(); };
+  const del = async (id) => {
+    try { await API.delete(`/projects/${id}`); toast.success('Deleted!'); load(); }
+    catch { toast.error('Failed to delete'); }
+  };
 
   return (
     <div>

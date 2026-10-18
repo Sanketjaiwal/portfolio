@@ -16,13 +16,13 @@ export default function Portfolio() {
   const [skills, setSkills] = useState([]);
 
   useEffect(() => {
-    API.get('/about').then(r => setAbout(r.data));
-    API.get('/projects').then(r => setProjects(r.data));
-    API.get('/certificates').then(r => setCerts(r.data));
-    API.get('/achievements').then(r => setAchievements(r.data));
-    API.get('/education').then(r => setEducation(r.data));
-    API.get('/social').then(r => setSocial(r.data));
-    API.get('/skills').then(r => setSkills(r.data));
+    API.get('/about').then(r => { if (r.data) setAbout(r.data); }).catch(() => {});
+    API.get('/projects').then(r => setProjects(r.data || [])).catch(() => {});
+    API.get('/certificates').then(r => setCerts(r.data || [])).catch(() => {});
+    API.get('/achievements').then(r => setAchievements(r.data || [])).catch(() => {});
+    API.get('/education').then(r => setEducation(r.data || [])).catch(() => {});
+    API.get('/social').then(r => setSocial(r.data || [])).catch(() => {});
+    API.get('/skills').then(r => setSkills(r.data || [])).catch(() => {});
   }, []);
 
   const grouped = skills.reduce((acc, s) => {
@@ -90,7 +90,7 @@ export default function Portfolio() {
           <div className="grid-3">
             {certs.map(c => (
               <div className="card" key={c._id}>
-                {c.image && <img src={c.image} alt={c.title} className="card-img" />}
+                {c.image && <img src={c.image.startsWith('http') ? c.image : `http://localhost:5000${c.image}`} alt={c.title} className="card-img" />}
                 <h3>{c.title}</h3>
                 <p style={{ color: 'var(--primary)', fontWeight: 500 }}>{c.issuer}</p>
                 <p>{c.date}</p>

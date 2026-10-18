@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
+import { Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FiHome, FiCode, FiAward, FiStar, FiBook, FiLink, FiUser, FiLogOut, FiZap } from 'react-icons/fi';
 import AdminAbout from './AdminAbout';
@@ -22,6 +22,7 @@ const navItems = [
 export default function AdminDashboard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
@@ -30,11 +31,14 @@ export default function AdminDashboard() {
       <aside className="admin-sidebar">
         <div className="logo">⚡ Admin Panel</div>
         <nav className="admin-nav">
-          {navItems.map(({ to, label, icon: Icon, end }) => (
-            <NavLink key={to} to={to} end={end} className={({ isActive }) => isActive ? 'active' : ''}>
-              <Icon size={16} /> {label}
-            </NavLink>
-          ))}
+          {navItems.map(({ to, label, icon: Icon, end }) => {
+            const isActive = end ? location.pathname === to : location.pathname.startsWith(to);
+            return (
+              <NavLink key={to} to={to} className={isActive ? 'active' : ''}>
+                <Icon size={16} /> {label}
+              </NavLink>
+            );
+          })}
           <a href="/" target="_blank" rel="noreferrer"><FiHome size={16} /> View Site</a>
           <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.8rem 1rem', color: 'var(--secondary)', fontSize: '0.9rem', fontWeight: 500, borderRadius: 10, width: '100%', marginTop: 'auto' }}>
             <FiLogOut size={16} /> Logout
@@ -43,13 +47,13 @@ export default function AdminDashboard() {
       </aside>
       <main className="admin-main">
         <Routes>
-          <Route path="/" element={<AdminAbout />} />
-          <Route path="/projects" element={<AdminProjects />} />
-          <Route path="/certificates" element={<AdminCertificates />} />
-          <Route path="/achievements" element={<AdminAchievements />} />
-          <Route path="/education" element={<AdminEducation />} />
-          <Route path="/social" element={<AdminSocial />} />
-          <Route path="/skills" element={<AdminSkills />} />
+          <Route index element={<AdminAbout />} />
+          <Route path="projects" element={<AdminProjects />} />
+          <Route path="certificates" element={<AdminCertificates />} />
+          <Route path="achievements" element={<AdminAchievements />} />
+          <Route path="education" element={<AdminEducation />} />
+          <Route path="social" element={<AdminSocial />} />
+          <Route path="skills" element={<AdminSkills />} />
         </Routes>
       </main>
     </div>

@@ -19,6 +19,12 @@ app.use('/api/education', require('./routes/education'));
 app.use('/api/social', require('./routes/social'));
 app.use('/api/skills', require('./routes/skills'));
 
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  res.status(500).json({ message: 'Server error' });
+});
+
 const seedAdmin = async () => {
   const Admin = require('./models/Admin');
   const exists = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
@@ -30,7 +36,12 @@ const seedAdmin = async () => {
 };
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => { console.log('MongoDB connected'); seedAdmin(); })
-  .catch(err => console.error(err));
-
-app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
+  .then(() => {
+    console.log('MongoDB connected');
+    seedAdmin();
+    app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
+  })
+  .catch(err => {
+    console.error('MongoDB connection failed:', err.message);
+    process.exit(1);
+  });

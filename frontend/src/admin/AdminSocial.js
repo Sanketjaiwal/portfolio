@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import API from '../utils/api';
 
-const empty = { platform: '', url: '', icon: '' };
+const empty = { platform: '', url: '' };
 const platforms = ['GitHub', 'LinkedIn', 'Twitter', 'Instagram', 'YouTube', 'Website', 'LeetCode', 'HackerRank', 'Kaggle', 'Other'];
 
 export default function AdminSocial() {
@@ -10,18 +10,26 @@ export default function AdminSocial() {
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
 
-  const load = () => API.get('/social').then(r => setItems(r.data));
-  useEffect(() => { load(); }, []);
+  const load = useCallback(() => {
+    API.get('/social').then(r => setItems(r.data)).catch(() => {});
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
 
   const save = async (e) => {
     e.preventDefault();
-    if (editing) { await API.put(`/social/${editing}`, form); toast.success('Updated!'); }
-    else { await API.post('/social', form); toast.success('Added!'); }
-    setForm(empty); setEditing(null); load();
+    try {
+      if (editing) { await API.put(`/social/${editing}`, form); toast.success('Updated!'); }
+      else { await API.post('/social', form); toast.success('Added!'); }
+      setForm(empty); setEditing(null); load();
+    } catch { toast.error('Failed to save'); }
   };
 
-  const edit = (item) => { setEditing(item._id); setForm(item); };
-  const del = async (id) => { await API.delete(`/social/${id}`); toast.success('Deleted!'); load(); };
+  const edit = (item) => { setEditing(item._id); setForm({ platform: item.platform || '', url: item.url || '' }); };
+  const del = async (id) => {
+    try { await API.delete(`/social/${id}`); toast.success('Deleted!'); load(); }
+    catch { toast.error('Failed to delete'); }
+  };
 
   return (
     <div>
