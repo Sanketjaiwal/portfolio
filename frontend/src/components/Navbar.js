@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 export default function Navbar() {
-  const sections = ['about', 'projects', 'certificates', 'achievements', 'education', 'skills', 'contact'];
+  const sections = ['about', 'projects', 'certificates', 'achievements', 'education', 'skills', 'resume', 'contact'];
   return (
     <header className="navbar">
       <div className="logo">&lt;Portfolio /&gt;</div>

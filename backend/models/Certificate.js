@@ -5,6 +5,7 @@ const CertificateSchema = new mongoose.Schema({
   issuer: String,
   date: String,
   image: String,
+  file: String,
   credentialUrl: String,
   createdAt: { type: Date, default: Date.now },
 });
