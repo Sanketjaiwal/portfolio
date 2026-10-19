@@ -16,4 +16,8 @@ router.post('/login', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// Token verification endpoint — used by PrivateRoute
+const auth = require('../middleware/auth');
+router.get('/verify', auth, (req, res) => res.json({ ok: true }));
+
 module.exports = router;

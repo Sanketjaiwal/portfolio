@@ -1,16 +1,42 @@
-import { Link } from 'react-router-dom';
+const NAV_SECTIONS = [
+  { id: 'about',        label: 'Home' },
+  { id: 'projects',     label: 'Projects' },
+  { id: 'certificates', label: 'Certificates' },
+  { id: 'achievements', label: 'Achievements' },
+  { id: 'education',    label: 'Education' },
+  { id: 'skills',       label: 'Skills' },
+  { id: 'resume',       label: 'Resume' },
+  { id: 'contact',      label: 'Contact' },
+];
 
-export default function Navbar() {
-  const sections = ['about', 'projects', 'certificates', 'achievements', 'education', 'skills', 'resume', 'contact'];
+const BASE = 'http://localhost:5000';
+const toUrl = (p) => p ? (p.startsWith('http') ? p : `${BASE}${p}`) : null;
+
+export default function Navbar({ activeSection = 0, onNav, about }) {
+  const avatarUrl = toUrl(about?.avatar);
   return (
     <header className="navbar">
-      <div className="logo">&lt;Portfolio /&gt;</div>
+      <div className="navbar-brand">
+        {avatarUrl
+          ? <img src={avatarUrl} alt="avatar" className="nav-avatar" />
+          : <div className="nav-avatar-placeholder">{about?.name?.[0] || 'P'}</div>
+        }
+        <span className="logo">{about?.name || <>&lt;Portfolio /&gt;</>}</span>
+      </div>
       <nav>
-        {sections.map(s => (
-          <a key={s} href={`#${s}`}>{s.charAt(0).toUpperCase() + s.slice(1)}</a>
+        {NAV_SECTIONS.map((s, i) => (
+          <button
+            key={s.id}
+            className={`nav-btn${activeSection === i ? ' nav-active' : ''}`}
+            onClick={() => onNav(i)}
+          >
+            {s.label}
+            {activeSection === i && <span className="nav-active-bar" />}
+          </button>
         ))}
-        <Link to="/login" style={{ color: 'var(--primary)' }}>Admin</Link>
       </nav>
     </header>
   );
 }
+
+export { NAV_SECTIONS };

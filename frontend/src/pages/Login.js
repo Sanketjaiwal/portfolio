@@ -15,6 +15,7 @@ export default function Login() {
     setLoading(true);
     try {
       const { data } = await API.post('/auth/login', form);
+      localStorage.setItem('token', data.token);
       login(data.token);
       toast.success('Welcome back!');
       navigate('/admin');
