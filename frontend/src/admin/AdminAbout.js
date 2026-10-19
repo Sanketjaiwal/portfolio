@@ -9,8 +9,10 @@ const defaultForm = { name: '', title: '', bio: '', email: '', phone: '', locati
 export default function AdminAbout() {
   const [form, setForm] = useState(defaultForm);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null);
   const [resumeFile, setResumeFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
   const [resumeName, setResumeName] = useState('');
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export default function AdminAbout() {
         const { name, title, bio, email, phone, location, avatar, resume } = r.data;
         setForm({ name: name || '', title: title || '', bio: bio || '', email: email || '', phone: phone || '', location: location || '' });
         if (avatar) setAvatarPreview(`${BASE}${avatar}`);
+        if (r.data.photo) setPhotoPreview(`${BASE}${r.data.photo}`);
         if (resume) setResumeName(resume.split('/').pop());
       }
     }).catch(() => {});
@@ -29,6 +32,13 @@ export default function AdminAbout() {
     if (!file) return;
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
+  };
+
+  const handlePhoto = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
   };
 
   const handleResume = (e) => {
@@ -44,6 +54,7 @@ export default function AdminAbout() {
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => fd.append(k, v));
       if (avatarFile) fd.append('avatar', avatarFile);
+      if (photoFile) fd.append('photo', photoFile);
       if (resumeFile) fd.append('resume', resumeFile);
       await API.put('/about', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       toast.success('About updated!');
@@ -57,28 +68,44 @@ export default function AdminAbout() {
       <div className="admin-header"><h1>About Me</h1></div>
       <form onSubmit={save}>
 
-        {/* Photo + Resume Upload Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+        {/* Photos + Resume Upload Row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
 
-          {/* Photo Upload */}
+          {/* Mini Avatar */}
           <div className="form-card" style={{ margin: 0 }}>
-            <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><FiUser /> Profile Photo</h3>
+            <h3 style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize:'0.95rem' }}><FiUser /> Mini Avatar <span style={{fontSize:'0.7rem',color:'var(--text2)',fontWeight:400}}>(navbar &amp; all pages)</span></h3>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
               {avatarPreview
-                ? <img src={avatarPreview} alt="avatar" style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', boxShadow: '0 0 20px rgba(108,99,255,0.4)' }} />
-                : <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', color: 'white' }}>
+                ? <img src={avatarPreview} alt="avatar" style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', boxShadow: '0 0 20px rgba(108,99,255,0.4)' }} />
+                : <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', color: 'white' }}>
                     {form.name?.[0]?.toUpperCase() || '?'}
                   </div>
               }
               <label style={{ cursor: 'pointer', width: '100%' }}>
-                <div style={{ ...inputStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textAlign: 'center' }}>
-                  <FiUpload /> {avatarFile ? avatarFile.name : 'Upload Photo (JPG/PNG)'}
+                <div style={{ ...inputStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textAlign: 'center', fontSize:'0.82rem' }}>
+                  <FiUpload /> {avatarFile ? avatarFile.name : 'Upload Mini Photo'}
                 </div>
                 <input type="file" accept="image/*" onChange={handleAvatar} style={{ display: 'none' }} />
               </label>
-              {avatarPreview && avatarFile && (
-                <button type="button" className="btn-sm btn-del" onClick={() => { setAvatarFile(null); setAvatarPreview(null); }}>Remove</button>
-              )}
+            </div>
+          </div>
+
+          {/* Portrait Photo */}
+          <div className="form-card" style={{ margin: 0 }}>
+            <h3 style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize:'0.95rem' }}><FiUser /> Portrait Photo <span style={{fontSize:'0.7rem',color:'var(--text2)',fontWeight:400}}>(home page only)</span></h3>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              {photoPreview
+                ? <img src={photoPreview} alt="portrait" style={{ width: 80, height: 120, borderRadius: 10, objectFit: 'cover', border: '3px solid var(--accent)', boxShadow: '0 0 20px rgba(0,212,255,0.4)' }} />
+                : <div style={{ width: 80, height: 120, borderRadius: 10, background: 'linear-gradient(135deg, var(--accent), var(--primary))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', color: 'white' }}>
+                    {form.name?.[0]?.toUpperCase() || '?'}
+                  </div>
+              }
+              <label style={{ cursor: 'pointer', width: '100%' }}>
+                <div style={{ ...inputStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textAlign: 'center', fontSize:'0.82rem' }}>
+                  <FiUpload /> {photoFile ? photoFile.name : 'Upload Portrait'}
+                </div>
+                <input type="file" accept="image/*" onChange={handlePhoto} style={{ display: 'none' }} />
+              </label>
             </div>
           </div>
 

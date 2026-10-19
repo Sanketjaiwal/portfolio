@@ -5,6 +5,7 @@ const AboutSchema = new mongoose.Schema({
   title: String,
   bio: String,
   avatar: String,
+  photo: String,
   resume: String,
   email: String,
   phone: String,

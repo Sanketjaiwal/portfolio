@@ -21,6 +21,8 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     if (file.fieldname === 'avatar') {
       cb(null, /image\/(jpeg|jpg|png|webp|gif)/.test(file.mimetype));
+    } else if (file.fieldname === 'photo') {
+      cb(null, /image\/(jpeg|jpg|png|webp|gif)/.test(file.mimetype));
     } else if (file.fieldname === 'resume') {
       cb(null, file.mimetype === 'application/pdf');
     } else {
@@ -51,7 +53,7 @@ router.get('/download-resume', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-router.put('/', auth, upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), async (req, res, next) => {
+router.put('/', auth, upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'photo', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), async (req, res, next) => {
   try {
     const data = { ...req.body };
     const existing = await About.findOne();
@@ -59,6 +61,10 @@ router.put('/', auth, upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'r
     if (req.files?.avatar) {
       deleteOldFile(existing?.avatar);
       data.avatar = `/uploads/about/${req.files.avatar[0].filename}`;
+    }
+    if (req.files?.photo) {
+      deleteOldFile(existing?.photo);
+      data.photo = `/uploads/about/${req.files.photo[0].filename}`;
     }
     if (req.files?.resume) {
       deleteOldFile(existing?.resume);

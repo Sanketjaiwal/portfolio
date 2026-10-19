@@ -183,6 +183,12 @@ export default function Portfolio() {
   const [showIntro, setShowIntro] = useState(true);    // hero intro overlay
   const isNavigating = useRef(false);
 
+  // Lock body scroll for frame-based portfolio
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   useEffect(() => {
     API.get('/about').then(r => { if (r.data) setAbout(r.data); }).catch(() => {});
     API.get('/projects').then(r => setProjects(r.data || [])).catch(() => {});
@@ -227,6 +233,7 @@ export default function Portfolio() {
   }, {});
 
   const avatarUrl = toUrl(about?.avatar);
+  const photoUrl = toUrl(about?.photo) || avatarUrl;  // portrait for hero, fallback to avatar
   const resumeUrl = toUrl(about?.resume);
 
   /* ── Keyboard & wheel navigation ── */
@@ -266,7 +273,6 @@ export default function Portfolio() {
 
   return (
     <>
-      {/* Hero intro scan — only on first load */}
       {showIntro && about && (
         <HeroIntro avatarUrl={avatarUrl} name={about?.name} onDone={() => setShowIntro(false)} />
       )}
@@ -310,8 +316,8 @@ export default function Portfolio() {
               {/* Left: big photo */}
               <div className="hero-photo-side">
                 <div className="hero-photo-wrap">
-                  {avatarUrl
-                    ? <img src={avatarUrl} alt="avatar" className="hero-photo-big" />
+                  {photoUrl
+                    ? <img src={photoUrl} alt="avatar" className="hero-photo-big" />
                     : <div className="hero-photo-placeholder">{about?.name?.[0] || 'P'}</div>
                   }
                   <div className="hero-photo-ring" />
