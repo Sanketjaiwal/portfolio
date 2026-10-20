@@ -7,6 +7,7 @@ const ProjectSchema = new mongoose.Schema({
   techStack: [String],
   liveUrl: String,
   githubUrl: String,
+  demoVideoUrl: String,
   featured: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });

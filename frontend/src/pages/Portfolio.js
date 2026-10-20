@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import API from '../utils/api';
-import { FiGithub, FiExternalLink, FiMail, FiPhone, FiMapPin, FiEye, FiX, FiFileText, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiGithub, FiExternalLink, FiMail, FiPhone, FiMapPin, FiEye, FiX, FiFileText, FiChevronDown, FiChevronUp, FiPlay } from 'react-icons/fi';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaYoutube, FaGlobe } from 'react-icons/fa';
 
 const BASE = 'http://localhost:5000';
@@ -151,6 +151,28 @@ function HeroIntro({ avatarUrl, name, onDone }) {
   );
 }
 
+/* ── Video Modal ── */
+function VideoModal({ url, title, onClose }) {
+  const isLocal = url.includes('/uploads/');
+  const yt = !isLocal && url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([-\w]+)/);
+  const embed = yt ? `https://www.youtube.com/embed/${yt[1]}?autoplay=1` : url;
+
+  return (
+    <div onClick={onClose} style={{ position:'fixed',inset:0,background:'rgba(0,0,0,0.92)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',padding:'1rem' }}>
+      <div onClick={e => e.stopPropagation()} style={{ width:'100%',maxWidth:860,background:'var(--card)',borderRadius:16,border:'1px solid var(--border)',overflow:'hidden' }}>
+        <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0.9rem 1.4rem',borderBottom:'1px solid var(--border)' }}>
+          <span style={{ fontWeight:600,display:'flex',alignItems:'center',gap:'0.5rem' }}><FiPlay color="var(--primary)" />{title}</span>
+          <button onClick={onClose} style={{ background:'none',border:'none',color:'var(--text)',cursor:'pointer' }}><FiX size={20}/></button>
+        </div>
+        {isLocal
+          ? <video src={url} controls autoPlay style={{ width:'100%',maxHeight:480,background:'#000',display:'block' }} />
+          : <iframe src={embed} title={title} width="100%" height="460" allow="autoplay; encrypted-media" allowFullScreen style={{ display:'block',border:'none' }} />
+        }
+      </div>
+    </div>
+  );
+}
+
 /* ── PDF Modal ── */
 function PdfModal({ url, title, onClose }) {
   return (
@@ -176,6 +198,7 @@ export default function Portfolio() {
   const [social, setSocial] = useState([]);
   const [skills, setSkills] = useState([]);
   const [pdfModal, setPdfModal] = useState(null);
+  const [videoModal, setVideoModal] = useState(null);
 
   const [activeSection, setActiveSection] = useState(0);
   const [loading, setLoading] = useState(false);       // syntax loader visible
@@ -299,6 +322,7 @@ export default function Portfolio() {
       </div>
 
       {pdfModal && <PdfModal url={pdfModal.url} title={pdfModal.title} onClose={() => setPdfModal(null)} />}
+      {videoModal && <VideoModal url={videoModal.url} title={videoModal.title} onClose={() => setVideoModal(null)} />}
 
       {/* Syntax loader */}
       {loading && (
@@ -370,6 +394,11 @@ export default function Portfolio() {
                         <div className="card-links">
                           {p.githubUrl && <a href={p.githubUrl} target="_blank" rel="noreferrer" className="card-link"><FiGithub /> Code</a>}
                           {p.liveUrl && <a href={p.liveUrl} target="_blank" rel="noreferrer" className="card-link"><FiExternalLink /> Live</a>}
+                          {p.demoVideoUrl && (
+                            <button onClick={() => setVideoModal({ url: toUrl(p.demoVideoUrl), title: p.title })} className="card-link" style={{ background:'none',border:'none',cursor:'pointer',padding:0,color:'var(--primary)',display:'inline-flex',alignItems:'center',gap:'0.3rem' }}>
+                              <FiPlay size={13}/> Demo Video
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}
