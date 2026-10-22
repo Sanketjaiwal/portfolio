@@ -25,6 +25,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Server error' });
 });
 
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully!");
+});
+
 const seedAdmin = async () => {
   const Admin = require('./models/Admin');
   const exists = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
