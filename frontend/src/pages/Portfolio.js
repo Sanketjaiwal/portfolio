@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
-import API from '../utils/api';
+import API, { assetUrl } from '../utils/api';
 import { FiGithub, FiExternalLink, FiMail, FiPhone, FiMapPin, FiEye, FiX, FiFileText, FiChevronDown, FiChevronUp, FiPlay } from 'react-icons/fi';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaYoutube, FaGlobe } from 'react-icons/fa';
 
-const BASE = 'http://localhost:5000';
 const socialIcons = { linkedin: FaLinkedin, github: FaGithub, twitter: FaTwitter, instagram: FaInstagram, youtube: FaYoutube, website: FaGlobe };
-const toUrl = (p) => p ? (p.startsWith('http') ? p : `${BASE}${p}`) : null;
 
 const DOT_LABELS = ['Home','Projects','Certificates','Achievements','Education','Skills','Resume','Contact'];
 
@@ -255,9 +253,9 @@ export default function Portfolio() {
     return acc;
   }, {});
 
-  const avatarUrl = toUrl(about?.avatar);
-  const photoUrl = toUrl(about?.photo) || avatarUrl;  // portrait for hero, fallback to avatar
-  const resumeUrl = toUrl(about?.resume);
+  const avatarUrl = assetUrl(about?.avatar);
+  const photoUrl = assetUrl(about?.photo) || avatarUrl;  // portrait for hero, fallback to avatar
+  const resumeUrl = assetUrl(about?.resume);
 
   /* ── Keyboard & wheel navigation ── */
   useEffect(() => {
@@ -387,7 +385,7 @@ export default function Portfolio() {
                 : <div className="grid-3">
                     {projects.map(p => (
                       <div className="card" key={p._id}>
-                        {p.image && <img src={toUrl(p.image)} alt={p.title} className="card-img" />}
+                        {p.image && <img src={assetUrl(p.image)} alt={p.title} className="card-img" />}
                         <h3>{p.title}</h3>
                         <p>{p.description}</p>
                         {p.techStack?.length > 0 && <div className="tags">{p.techStack.map(t => <span className="tag" key={t}>{t}</span>)}</div>}
@@ -395,7 +393,7 @@ export default function Portfolio() {
                           {p.githubUrl && <a href={p.githubUrl} target="_blank" rel="noreferrer" className="card-link"><FiGithub /> Code</a>}
                           {p.liveUrl && <a href={p.liveUrl} target="_blank" rel="noreferrer" className="card-link"><FiExternalLink /> Live</a>}
                           {p.demoVideoUrl && (
-                            <button onClick={() => setVideoModal({ url: toUrl(p.demoVideoUrl), title: p.title })} className="card-link" style={{ background:'none',border:'none',cursor:'pointer',padding:0,color:'var(--primary)',display:'inline-flex',alignItems:'center',gap:'0.3rem' }}>
+                            <button onClick={() => setVideoModal({ url: assetUrl(p.demoVideoUrl), title: p.title })} className="card-link" style={{ background:'none',border:'none',cursor:'pointer',padding:0,color:'var(--primary)',display:'inline-flex',alignItems:'center',gap:'0.3rem' }}>
                               <FiPlay size={13}/> Demo Video
                             </button>
                           )}
@@ -422,7 +420,7 @@ export default function Portfolio() {
                     {certs.map(c => (
                       <div className="card" key={c._id}>
                         {c.image
-                          ? <img src={toUrl(c.image)} alt={c.title} className="card-img" />
+                          ? <img src={assetUrl(c.image)} alt={c.title} className="card-img" />
                           : c.file && (
                             <div style={{ height:160,background:'rgba(108,99,255,0.07)',borderRadius:10,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'0.5rem',marginBottom:'1rem',border:'1px dashed var(--border)' }}>
                               <FiFileText size={36} color="var(--primary)" />
@@ -435,7 +433,7 @@ export default function Portfolio() {
                         <p style={{ color:'var(--text2)',fontSize:'0.83rem' }}>{c.date}</p>
                         <div className="card-links" style={{ marginTop:'1rem',flexWrap:'wrap' }}>
                           {c.file && (
-                            <button onClick={() => setPdfModal({ url:toUrl(c.file),title:c.title })}
+                            <button onClick={() => setPdfModal({ url:assetUrl(c.file),title:c.title })}
                               className="card-link" style={{ background:'none',border:'none',cursor:'pointer',padding:0,color:'var(--text2)' }}>
                               <FiEye /> View PDF
                             </button>

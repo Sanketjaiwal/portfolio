@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import { assetUrl } from '../utils/api';
+>>>>>>> 0455340 (final commit)
 import { Link } from 'react-router-dom';
 
 const NAV_SECTIONS = [
@@ -11,11 +15,8 @@ const NAV_SECTIONS = [
   { id: 'contact',      label: 'Contact' },
 ];
 
-const BASE = 'http://localhost:5000';
-const toUrl = (p) => p ? (p.startsWith('http') ? p : `${BASE}${p}`) : null;
-
 export default function Navbar({ activeSection = 0, onNav, about }) {
-  const avatarUrl = toUrl(about?.avatar);
+  const avatarUrl = assetUrl(about?.avatar);
   return (
     <header className="navbar">
       <div className="navbar-brand">
