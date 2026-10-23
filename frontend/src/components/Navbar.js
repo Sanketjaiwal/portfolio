@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const NAV_SECTIONS = [
   { id: 'about',        label: 'Home' },
   { id: 'projects',     label: 'Projects' },
@@ -35,6 +37,7 @@ export default function Navbar({ activeSection = 0, onNav, about }) {
           </button>
         ))}
       </nav>
+      <Link className="nav-admin-btn" to="/login">Login</Link>
     </header>
   );
 }

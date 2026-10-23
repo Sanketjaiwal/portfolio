@@ -798,6 +798,7 @@ a { text-decoration:none; color:inherit; }
 /* ── Responsive ── */
 @media (max-width:768px) {
   .navbar nav { display:none; }
+  .navbar { padding:0.8rem 1rem; }
   .admin-sidebar { display:none; }
   .admin-main { margin-left:0; }
   .grid-2 { grid-template-columns:1fr; }
