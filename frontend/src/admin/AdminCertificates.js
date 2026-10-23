@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { FiUpload, FiFileText } from 'react-icons/fi';
 import API from '../utils/api';
 
-const BASE = 'http://localhost:5000';
+const BASE = 'https://portfolio-backend-bbfj.onrender.com';
 const empty = { title: '', issuer: '', date: '', credentialUrl: '' };
 
 export default function AdminCertificates() {

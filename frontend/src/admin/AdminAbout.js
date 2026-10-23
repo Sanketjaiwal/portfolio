@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { FiUpload, FiUser, FiFileText } from 'react-icons/fi';
 import API from '../utils/api';
 
-const BASE = 'http://localhost:5000';
+const BASE = 'https://portfolio-backend-bbfj.onrender.com';
 const defaultForm = { name: '', title: '', bio: '', email: '', phone: '', location: '' };
 
 export default function AdminAbout() {

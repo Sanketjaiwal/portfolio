@@ -1,4 +1,4 @@
-npm@echo off
+@echo off
 echo Starting Portfolio Backend...
 start cmd /k "cd backend && node server.js"
 timeout /t 3
