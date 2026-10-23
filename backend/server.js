@@ -31,21 +31,38 @@ app.get("/", (req, res) => {
 
 const seedAdmin = async () => {
   const Admin = require('./models/Admin');
-  const exists = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
-  if (!exists) {
-    const hashed = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
-    await Admin.create({ email: process.env.ADMIN_EMAIL, password: hashed });
-    console.log('Admin created:', process.env.ADMIN_EMAIL);
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+  if (!email || !password) {
+    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be configured');
   }
+
+  const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const admin = await Admin.findOne({ email: new RegExp(`^${escapedEmail}$`, 'i') });
+  const hashed = await bcrypt.hash(password, 10);
+
+  if (admin) {
+    admin.email = email;
+    admin.password = hashed;
+    await admin.save();
+  } else {
+    await Admin.create({ email, password: hashed });
+  }
+  console.log('Admin credentials synchronized from environment');
 };
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-    seedAdmin();
-    app.listen(process.env.PORT || 5000, '0.0.0.0', () => console.log(`Server running on port ${process.env.PORT || 5000}`));
-  })
-  .catch(err => {
-    console.error('MongoDB connection failed:', err.message);
+const startServer = async () => {
+  if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
+    throw new Error('MONGO_URI and JWT_SECRET must be configured');
+  }
+
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log('MongoDB connected');
+  await seedAdmin();
+  app.listen(process.env.PORT || 5000, '0.0.0.0', () => console.log(`Server running on port ${process.env.PORT || 5000}`));
+};
+
+startServer().catch(err => {
+    console.error('Server startup failed:', err.message);
     process.exit(1);
   });

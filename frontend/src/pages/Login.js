@@ -19,8 +19,10 @@ export default function Login() {
       login(data.token);
       toast.success('Welcome back!');
       navigate('/admin');
-    } catch {
-      toast.error('Invalid credentials');
+    } catch (error) {
+      const message = error.response?.data?.message
+        || (error.response ? 'Login failed. Please try again.' : 'Unable to connect to the server. Please try again later.');
+      toast.error(message);
     } finally {
       setLoading(false);
     }
