@@ -9,7 +9,7 @@ const NAV_SECTIONS = [
   { id: 'contact',      label: 'Contact' },
 ];
 
-const BASE = 'http://localhost:5000';
+const BASE = 'https://portfolio-backend-bbfj.onrender.com/api';
 const toUrl = (p) => p ? (p.startsWith('http') ? p : `${BASE}${p}`) : null;
 
 export default function Navbar({ activeSection = 0, onNav, about }) {

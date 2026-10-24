@@ -4,7 +4,7 @@ import API from '../utils/api';
 import { FiGithub, FiExternalLink, FiMail, FiPhone, FiMapPin, FiEye, FiX, FiFileText, FiChevronDown, FiChevronUp, FiPlay } from 'react-icons/fi';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaYoutube, FaGlobe } from 'react-icons/fa';
 
-const BASE = 'https://portfolio-backend-bbfj.onrender.com';
+const BASE = 'https://portfolio-backend-bbfj.onrender.com/api';
 const socialIcons = { linkedin: FaLinkedin, github: FaGithub, twitter: FaTwitter, instagram: FaInstagram, youtube: FaYoutube, website: FaGlobe };
 const toUrl = (p) => p ? (p.startsWith('http') ? p : `${BASE}${p}`) : null;
 
