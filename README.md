@@ -38,6 +38,14 @@ Double-click start.bat
 - Admin Login: http://localhost:3000/login
 - Backend API: http://localhost:5000/api
 
+## Render Deployment
+
+The root `render.yaml` configures the frontend as a Render Static Site and rewrites
+deep links such as `/login` and `/admin` to `index.html`, allowing React Router to
+handle direct visits and page refreshes. Apply this Blueprint configuration to the
+existing `portfolio-qnaf` service, or add a Render Static Site rewrite rule with
+source `/*` and destination `/index.html`.
+
 ## Default Admin Credentials
 - Email: `admin@portfolio.com`
 - Password: `admin123`
