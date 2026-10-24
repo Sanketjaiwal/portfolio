@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'https://portfolio-backend-bbfj.onrender.com' });
+const API = axios.create({ baseURL: 'https://portfolio-backend-bbfj.onrender.com/api' });
 
 API.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
