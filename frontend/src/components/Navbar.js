@@ -1,3 +1,5 @@
+import { toMediaUrl } from '../utils/api';
+
 const NAV_SECTIONS = [
   { id: 'about',        label: 'Home' },
   { id: 'projects',     label: 'Projects' },
@@ -9,11 +11,8 @@ const NAV_SECTIONS = [
   { id: 'contact',      label: 'Contact' },
 ];
 
-const BASE = 'https://portfolio-backend-bbfj.onrender.com/api';
-const toUrl = (p) => p ? (p.startsWith('http') ? p : `${BASE}${p}`) : null;
-
 export default function Navbar({ activeSection = 0, onNav, about }) {
-  const avatarUrl = toUrl(about?.avatar);
+  const avatarUrl = toMediaUrl(about?.avatar);
   return (
     <header className="navbar">
       <div className="navbar-brand">

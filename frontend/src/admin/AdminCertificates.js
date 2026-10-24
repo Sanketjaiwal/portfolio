@@ -1,9 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { FiUpload, FiFileText } from 'react-icons/fi';
-import API from '../utils/api';
+import API, { toMediaUrl } from '../utils/api';
 
-const BASE = 'https://portfolio-backend-bbfj.onrender.com/api';
 const empty = { title: '', issuer: '', date: '', credentialUrl: '' };
 
 export default function AdminCertificates() {
@@ -62,8 +61,8 @@ export default function AdminCertificates() {
     setEditing(item._id);
     setForm({ title: item.title || '', issuer: item.issuer || '', date: item.date || '', credentialUrl: item.credentialUrl || '' });
     setImageFile(null); setPdfFile(null);
-    setPreview(item.image ? `${BASE}${item.image}` : null);
-    setExistingPdf(item.file ? `${BASE}${item.file}` : null);
+    setPreview(toMediaUrl(item.image));
+    setExistingPdf(toMediaUrl(item.file));
   };
 
   const del = async (id) => {
@@ -156,7 +155,7 @@ export default function AdminCertificates() {
           <div className="item-row" key={item._id}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               {item.image
-                ? <img src={`${BASE}${item.image}`} alt={item.title} style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' }} />
+                ? <img src={toMediaUrl(item.image)} alt={item.title} style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' }} />
                 : <div style={{ width: 60, height: 40, borderRadius: 6, background: 'var(--bg3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
                     {item.file ? <FiFileText color="var(--primary)" /> : '🏅'}
                   </div>

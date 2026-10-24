@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FiUpload, FiUser, FiFileText } from 'react-icons/fi';
-import API from '../utils/api';
+import API, { toMediaUrl } from '../utils/api';
 
-const BASE = 'https://portfolio-backend-bbfj.onrender.com/api';
 const defaultForm = { name: '', title: '', bio: '', email: '', phone: '', location: '' };
 
 export default function AdminAbout() {
@@ -20,8 +19,8 @@ export default function AdminAbout() {
       if (r.data) {
         const { name, title, bio, email, phone, location, avatar, resume } = r.data;
         setForm({ name: name || '', title: title || '', bio: bio || '', email: email || '', phone: phone || '', location: location || '' });
-        if (avatar) setAvatarPreview(`${BASE}${avatar}`);
-        if (r.data.photo) setPhotoPreview(`${BASE}${r.data.photo}`);
+        if (avatar) setAvatarPreview(toMediaUrl(avatar));
+        if (r.data.photo) setPhotoPreview(toMediaUrl(r.data.photo));
         if (resume) setResumeName(resume.split('/').pop());
       }
     }).catch(() => {});
@@ -126,7 +125,7 @@ export default function AdminAbout() {
                 <input type="file" accept="application/pdf" onChange={handleResume} style={{ display: 'none' }} />
               </label>
               {resumeName && (
-                <a href={`${BASE}/uploads/about/${resumeName}`} target="_blank" rel="noreferrer" className="btn-sm btn-edit" style={{ textAlign: 'center' }}>
+                <a href={toMediaUrl(`/uploads/about/${resumeName}`)} target="_blank" rel="noreferrer" className="btn-sm btn-edit" style={{ textAlign: 'center' }}>
                   View Current PDF
                 </a>
               )}
