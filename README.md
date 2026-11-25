@@ -33,11 +33,6 @@ npm start
 Double-click start.bat
 ```
 
-## URLs
-- Portfolio: http://localhost:3000
-- Admin Login: http://localhost:3000/login
-- Backend API: http://localhost:5000/api
-
 ## Default Admin Credentials
 - Email: `admin@portfolio.com`
 - Password: `admin123`
