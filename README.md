@@ -33,9 +33,6 @@ npm start
 Double-click start.bat
 ```
 
-## Default Admin Credentials
-- Email: `admin@portfolio.com`
-- Password: `admin123`
 
 > ⚠️ Change these in `backend/.env` before deploying!
 
